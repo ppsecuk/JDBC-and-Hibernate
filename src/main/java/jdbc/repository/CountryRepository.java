@@ -1,6 +1,6 @@
-package repository;
+package jdbc.repository;
 
-import model.Country;
+import jdbc.model.Country;
 
 import java.sql.*;
 import java.util.ArrayList;

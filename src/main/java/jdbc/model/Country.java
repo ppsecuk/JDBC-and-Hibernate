@@ -1,4 +1,4 @@
-package model;
+package jdbc.model;
 
 public class Country {
     private String code;

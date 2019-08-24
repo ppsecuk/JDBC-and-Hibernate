@@ -1,7 +1,9 @@
-package model;
+package jdbc;
 
-import repository.CityRepository;
-import repository.CountryRepository;
+import jdbc.model.City;
+import jdbc.model.Country;
+import jdbc.repository.CityRepository;
+import jdbc.repository.CountryRepository;
 
 import java.sql.SQLException;
 import java.util.List;

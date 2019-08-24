@@ -1,20 +1,32 @@
-package model;
+package hibernate.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity(name = "city")
 public class City {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String countryCode;
     private String district;
-    private long population;
+    private Long population;
 
-    public City(String name, String countryCode, String district, long population) {
+    public City() {
+    }
+
+    public City(String name, String countryCode, String district, Long population) {
         this.name = name;
         this.countryCode = countryCode;
         this.district = district;
         this.population = population;
     }
 
-    public City(long id, String name, String countryCode, String district, long population) {
+    public City(Long id, String name, String countryCode, String district, Long population) {
         this.id = id;
         this.name = name;
         this.countryCode = countryCode;
@@ -22,7 +34,7 @@ public class City {
         this.population = population;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -50,11 +62,11 @@ public class City {
         this.district = district;
     }
 
-    public long getPopulation() {
+    public Long getPopulation() {
         return population;
     }
 
-    public void setPopulation(long population) {
+    public void setPopulation(Long population) {
         this.population = population;
     }
 }
