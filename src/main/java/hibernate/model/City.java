@@ -1,37 +1,33 @@
 package hibernate.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "city")
+@NamedQueries({
+    @NamedQuery(name = "citiesByName", query = "FROM city c WHERE c.name = :cityNameParam"),
+    @NamedQuery(name = "citiesByCountryCode", query = "FROM city c WHERE c.country.code = :countryCodeParam")
+})
 public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String countryCode;
     private String district;
     private Long population;
+
+    @ManyToOne
+    @JoinColumn(name = "countryCode")
+    private Country country;
 
     public City() {
     }
 
-    public City(String name, String countryCode, String district, Long population) {
+    public City(String name, String district, Long population, Country country) {
         this.name = name;
-        this.countryCode = countryCode;
         this.district = district;
         this.population = population;
-    }
-
-    public City(Long id, String name, String countryCode, String district, Long population) {
-        this.id = id;
-        this.name = name;
-        this.countryCode = countryCode;
-        this.district = district;
-        this.population = population;
+        this.country = country;
     }
 
     public Long getId() {
@@ -44,14 +40,6 @@ public class City {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
     }
 
     public String getDistrict() {
@@ -68,5 +56,13 @@ public class City {
 
     public void setPopulation(Long population) {
         this.population = population;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 }

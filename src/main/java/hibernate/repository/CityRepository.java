@@ -10,6 +10,10 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class CityRepository {
@@ -33,10 +37,19 @@ public class CityRepository {
     public static List<City> getCities (){
 
         Session session = sessionFactory.openSession();
-        //List<City> cities = session.createQuery("FROM city", City.class).setMaxResults(50).getResultList();
-        List<City> cities = session.createQuery("FROM city", City.class)
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<City> criteriaQuery = criteriaBuilder.createQuery(City.class);
+        criteriaQuery.from(City.class);
+
+        List<City> cities = session.createQuery(criteriaQuery)
                 .setMaxResults(50)
                 .getResultList();
+
+        //List<City> cities = session.createQuery("FROM city", City.class).setMaxResults(50).getResultList();
+//        List<City> cities = session.createQuery("FROM city", City.class)
+//                .setMaxResults(50)
+//                .getResultList();
         session.close();
 
         return cities;
@@ -45,8 +58,23 @@ public class CityRepository {
     public static List<City> getCitiesByName (String cityName){
         Session session = sessionFactory.openSession();
         //List<City> cities = session.createQuery("FROM city", City.class).setMaxResults(50).getResultList();
-        List<City> cities = session.createQuery("FROM city c WHERE c.name = :cityNameParam", City.class)
-                .setParameter("cityNameParam", cityName)
+//        List<City> cities = session.createQuery("FROM city c WHERE c.name = :cityNameParam", City.class)
+//                .setParameter("cityNameParam", cityName)
+//                .setMaxResults(50)
+//                .getResultList();
+//        List<City> cities = session.createNamedQuery("citiesByName", City.class)
+//                .setParameter("cityNameParam", cityName)
+//                .setMaxResults(50)
+//                .getResultList();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<City> criteriaQuery = criteriaBuilder.createQuery(City.class);
+        Root<City> root = criteriaQuery.from(City.class);
+
+        Predicate predicate = criteriaBuilder.equal(root.get("name"), cityName);
+
+        criteriaQuery.where(predicate);
+
+        List<City> cities = session.createQuery(criteriaQuery)
                 .setMaxResults(50)
                 .getResultList();
         session.close();
@@ -57,7 +85,7 @@ public class CityRepository {
     public static List<City> getCitiesByCountryCode (String countryCode) {
         Session session = sessionFactory.openSession();
         //List<City> cities = session.createQuery("FROM city", City.class).setMaxResults(50).getResultList();
-        List<City> cities = session.createQuery("FROM city c WHERE c.countryCode = :countryCodeParam", City.class)
+        List<City> cities = session.createQuery("FROM city c WHERE c.country.code = :countryCodeParam", City.class)
                 .setParameter("countryCodeParam", countryCode)
                 .setMaxResults(50)
                 .getResultList();

@@ -41,8 +41,8 @@ public class HibernateMain {
                 String district = scanner.nextLine();
                 System.out.println("Enter city population:");
                 long population = scanner.nextLong();
-
-                City city = new City(cityName, countryCode, district, population);
+                Country country = CountryRepository.getCountryByCode(countryCode);
+                City city = new City(cityName, district, population, country);
                 CityRepository.addCity(city);
                 System.out.println("City " + cityName + " has been added.");
                 break;
@@ -79,10 +79,8 @@ public class HibernateMain {
                 scanner.nextLine();
                 System.out.print("Enter country code: ");
                 countryCode = scanner.nextLine();
-                Country country = CountryRepository.getCountryById(countryCode);
-                printCountry(country);
-                cities = CityRepository.getCitiesByCountryCode(countryCode);
-                printCities(cities);
+                country = CountryRepository.getCountryById(countryCode);
+                printCountryAndItsCities(country);
                 break;
             case 9:
                 //homework
@@ -126,7 +124,7 @@ public class HibernateMain {
     public static void printCity(City city) {
         System.out.printf("%-10s ",city.getId());
         System.out.printf("%-20s ",city.getName());
-        System.out.printf("%-20s ",city.getCountryCode());
+        System.out.printf("%-20s ",city.getCountry().getCode());
         System.out.printf("%-20s ",city.getDistrict());
         System.out.println(city.getPopulation());
     }
@@ -141,7 +139,13 @@ public class HibernateMain {
         System.out.printf("%-26s | ",country.getRegion());
         System.out.printf("%-6s | ",country.getIndepYear());
         System.out.printf("%-45s | ",country.getGovernmentForm());
-        System.out.printf("%-4s ",country.getLifeExpectancy());
+        System.out.printf("%-4s | ",country.getLifeExpectancy());
+        System.out.printf("%-9s | ",country.getPopulationDensity());
         System.out.println(country.getPopulation());
+    }
+
+    public static void printCountryAndItsCities (Country country) {
+        printCountry(country);
+        printCities(country.getCities());
     }
 }

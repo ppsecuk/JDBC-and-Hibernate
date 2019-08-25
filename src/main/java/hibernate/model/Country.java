@@ -1,31 +1,41 @@
 package hibernate.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "country")
 public class Country {
     @Id
-    private String code;
+    @Enumerated(value = EnumType.STRING)
+    private CountryCode code;
     private String name;
     private String continent;
     private String region;
-    private double surfaceArea;
-    private int indepYear;
+    private Double surfaceArea;
+    //@Column indicates column name which is located in database
+    //@Column(name = "indepYear")
+    private Integer indepYear;
     private Long population;
-    private double lifeExpectancy;
-    private double gnp;
-    private double gnpOld;
+    private Double lifeExpectancy;
+    private Double gnp;
+    private Double gnpOld;
     private String localName;
     private String governmentForm;
     private String headOfState;
-    private int capital;
+    private Integer capital;
     private String code2;
+
+    @OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
+    private List<City> cities;
+
+    //This is a variable that does not exist in the database
+    @Transient
+    private Double populationDensity;
 
     public Country() {
     }
 
-    public Country(String name, String continent, String region, double surfaceArea, int indepYear, Long population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int capital, String code2) {
+    public Country(String name, String continent, String region, Double surfaceArea, Integer indepYear, Long population, Double lifeExpectancy, Double gnp, Double gnpOld, String localName, String governmentForm, String headOfState, Integer capital, String code2) {
         this.name = name;
         this.continent = continent;
         this.region = region;
@@ -42,7 +52,7 @@ public class Country {
         this.code2 = code2;
     }
 
-    public Country(String code, String name, String continent, String region, double surfaceArea, int indepYear, Long population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int capital, String code2) {
+    public Country(CountryCode code, String name, String continent, String region, Double surfaceArea, Integer indepYear, Long population, Double lifeExpectancy, Double gnp, Double gnpOld, String localName, String governmentForm, String headOfState, Integer capital, String code2) {
         this.code = code;
         this.name = name;
         this.continent = continent;
@@ -60,8 +70,12 @@ public class Country {
         this.code2 = code2;
     }
 
-    public String getCode() {
+    public CountryCode getCode() {
         return code;
+    }
+
+    public void setCode(CountryCode code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -88,19 +102,19 @@ public class Country {
         this.region = region;
     }
 
-    public double getSurfaceArea() {
+    public Double getSurfaceArea() {
         return surfaceArea;
     }
 
-    public void setSurfaceArea(double surfaceArea) {
+    public void setSurfaceArea(Double surfaceArea) {
         this.surfaceArea = surfaceArea;
     }
 
-    public int getIndepYear() {
+    public Integer getIndepYear() {
         return indepYear;
     }
 
-    public void setIndepYear(int indepYear) {
+    public void setIndepYear(Integer indepYear) {
         this.indepYear = indepYear;
     }
 
@@ -112,27 +126,27 @@ public class Country {
         this.population = population;
     }
 
-    public double getLifeExpectancy() {
+    public Double getLifeExpectancy() {
         return lifeExpectancy;
     }
 
-    public void setLifeExpectancy(double lifeExpectancy) {
+    public void setLifeExpectancy(Double lifeExpectancy) {
         this.lifeExpectancy = lifeExpectancy;
     }
 
-    public double getGnp() {
+    public Double getGnp() {
         return gnp;
     }
 
-    public void setGnp(double gnp) {
+    public void setGnp(Double gnp) {
         this.gnp = gnp;
     }
 
-    public double getGnpOld() {
+    public Double getGnpOld() {
         return gnpOld;
     }
 
-    public void setGnpOld(double gnpOld) {
+    public void setGnpOld(Double gnpOld) {
         this.gnpOld = gnpOld;
     }
 
@@ -160,11 +174,11 @@ public class Country {
         this.headOfState = headOfState;
     }
 
-    public int getCapital() {
+    public Integer getCapital() {
         return capital;
     }
 
-    public void setCapital(int capital) {
+    public void setCapital(Integer capital) {
         this.capital = capital;
     }
 
@@ -174,5 +188,26 @@ public class Country {
 
     public void setCode2(String code2) {
         this.code2 = code2;
+    }
+
+    public List<City> getCities() {
+        return cities;
+    }
+
+    public void setCities(List<City> cities) {
+        this.cities = cities;
+    }
+
+    public Double getPopulationDensity() {
+        return populationDensity;
+    }
+
+    public void setPopulationDensity(Double populationDensity) {
+        this.populationDensity = populationDensity;
+    }
+
+    @PostLoad
+    public void calculatePopulationDensity () {
+        populationDensity = population / surfaceArea;
     }
 }
